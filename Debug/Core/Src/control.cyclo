@@ -1,0 +1,8 @@
+../Core/Src/control.c:77:6:DectoHex	1
+../Core/Src/control.c:87:9:HextoDec	2
+../Core/Src/control.c:104:6:System_Init	11
+../Core/Src/control.c:199:6:Usart3_ReceiveData	48
+../Core/Src/control.c:327:6:Ultra_FourStates	28
+../Core/Src/control.c:513:6:Log_Writer2Flash	4
+../Core/Src/control.c:556:6:Warning_LowBattery	7
+../Core/Src/control.c:598:13:SetPWMDutyCycleAndFrequency	7

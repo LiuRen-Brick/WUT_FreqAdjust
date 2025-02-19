@@ -1,0 +1,5 @@
+../Core/Src/emulation_ee.c:17:5:STMFLASH_ReadHalfWord	1
+../Core/Src/emulation_ee.c:23:6:STMFLASH_Write_NoCheck	2
+../Core/Src/emulation_ee.c:33:6:STMFLASH_Write	10
+../Core/Src/emulation_ee.c:88:6:STMFLASH_Read	2
+../Core/Src/emulation_ee.c:98:6:Flash_PageErase	1

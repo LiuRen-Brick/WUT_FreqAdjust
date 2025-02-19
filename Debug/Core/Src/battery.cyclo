@@ -1,0 +1,2 @@
+../Core/Src/battery.c:35:6:Battery_LevelReceive	29
+../Core/Src/battery.c:125:6:Battery_LevelSend	13

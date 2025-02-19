@@ -1,0 +1,3 @@
+../Core/Src/encrypt.c:24:13:Encrypt_UidGet	1
+../Core/Src/encrypt.c:37:13:Encrypt_UidSecretKey	1
+../Core/Src/encrypt.c:50:6:Encrypt_ApplicaStar	7

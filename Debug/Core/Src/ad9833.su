@@ -1,0 +1,10 @@
+../Core/Src/ad9833.c:24:6:AD9833_Delay	16	static
+../Core/Src/ad9833.c:37:13:AD9833_FSYNCSet	16	static
+../Core/Src/ad9833.c:49:13:AD9833_SCLKSet	16	static
+../Core/Src/ad9833.c:61:13:AD9833_SDATASet	16	static
+../Core/Src/ad9833.c:73:13:AD9833_SendData	24	static
+../Core/Src/ad9833.c:105:13:AD9833_SendPhase	24	static
+../Core/Src/ad9833.c:125:13:AD9833_SendWave	32	static
+../Core/Src/ad9833.c:140:13:AD9833_SendFrequency	56	static
+../Core/Src/ad9833.c:171:6:AD9833_InitIo	16	static
+../Core/Src/ad9833.c:189:6:AD9833_SetPara	32	static

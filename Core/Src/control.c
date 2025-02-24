@@ -25,9 +25,9 @@ enum Ultransound_Work_State  Ultrasound_state = NULL_STATE ;
 extern uint32_t ultrasound_standby_time,tim4_count1,tim4_count2;
 uint8_t  Comd_funparameter_txbuffer[14]={0xEE,0xB5,0x13,0xBC,0x00,0x00,0x01,0x11,0x30,0x30,0xFF,0xFC,0xFF,0xFF};
 #ifdef SIGNLE
-	uint8_t duty_cycle_count = 66;
+	uint8_t duty_cycle_count = 100;
 	uint16_t duty_tim = 100;
-	uint32_t duty_count = 2500;
+	uint32_t duty_count = 50000;
 #else
 	uint32_t duty_cycle_count = 50;
 #endif
@@ -61,6 +61,8 @@ uint32_t Charge_Time = 0;
 uint8_t LockOn_ParamFlg = 0;
 uint32_t ShuntDowmCount = 0;
 uint16_t PowerFlg = 0;
+
+uint16_t FreqAdjustParam[2] = {0};
 
 /*****************************************************************************************
  * FLASH_SAVE_ADDR		            参数修改标志位
@@ -111,10 +113,29 @@ void System_Init(void)
 	AD9833_InitIo(AD9877_Ch_A);
 	AD9833_InitIo(AD9877_Ch_B);
 
+	STMFLASH_Read(FLASH_SLAVE_ADJUST,(uint16_t*)&FreqAdjustParam,2);
 	STMFLASH_Read(FLASH_SLAVE_LOWFLG,(uint16_t*)&Low_Battery_Flg,1);
 	STMFLASH_Read(FLASH_SLAVE_LOCKFLG ,(uint16_t*)&LockOn_ParamFlg,1);
 	STMFLASH_Read(FLASH_SLAVE_WORKCOUNT,(uint16_t*)(&WorkCount),1);
 	STMFLASH_Read(FLASH_SLAVE_SHUNTDOWM ,(uint16_t*)&PowerFlg,1);
+
+	if(FreqAdjustParam[0] == 0xFFFF)
+	{
+		duty_cycle_count = 101;
+	}else
+	{
+		duty_cycle_count = (uint8_t)FreqAdjustParam[0];
+	}
+
+	if(FreqAdjustParam[1] == 0xFFFF)
+	{
+		duty_tim = 5000;
+	}else
+	{
+		duty_tim = FreqAdjustParam[1];
+	}
+
+	SetPWMDutyCycleAndFrequency(duty_tim);
 
 	if(WorkCount == 0xFFFF)
 	{
@@ -156,7 +177,7 @@ void System_Init(void)
 		Comd_funparameter_Vibration_txbuffer = Vibration_Paramete;
 	}else if((Change_Paramete_Flg[0] == 0xffff)&&(Change_Paramete_Flg[1] == 0xffff)&&(Change_Paramete_Flg[2] == 0xffff))
 	{
-		Tx_Frequency_Paramete = 0X64;
+		Tx_Frequency_Paramete = 0X4A;
 		TX_Vibration_Paramete = 0X0A;
 
 		//if(Tx_Frequency_Paramete == 84)
@@ -208,10 +229,13 @@ void Usart3_ReceiveData(void)
 			if((USART3_RX_BUF[3] == 0x0) && (USART3_RX_BUF[4] == 0x0) && (USART3_RX_BUF[5] == 0x02) && (USART3_RX_BUF[6] == 0x01)) //超声开启
 			{
 				Ultrasound_state = WORK_STATE;
+				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 				DMA_USART3_Tx_Data(Cmd_GetTim, 6);
 			}else if((USART3_RX_BUF[3] == 0x0) && (USART3_RX_BUF[4] == 0x0) && (USART3_RX_BUF[5] == 0x04) && (USART3_RX_BUF[6] == 0x00)) //超声停止
 			{
 				Ultrasound_state = STANDBY_STATE;
+
+				HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
 			}else if(USART3_RX_BUF[3] == 0xBC) //超声频率设置
 			{
 				if(USART3_RX_BUF[6] == 0x10)
@@ -263,6 +287,8 @@ void Usart3_ReceiveData(void)
 						DMA_USART3_Tx_Data(Comd_funparameter_txbuffer, 14);
 						HAL_Delay(2);
 						DMA_USART3_Tx_Data(Comd_funparameter_txbuffer, 14);
+
+						HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
 					}
 				}else
 				{}
@@ -277,7 +303,18 @@ void Usart3_ReceiveData(void)
 					duty_cycle_count = 0x65;
 				}
 
-				SetPWMDutyCycleAndFrequency(duty_tim);
+				if((duty_cycle_count == (uint8_t)FreqAdjustParam[0]) && (duty_tim == FreqAdjustParam[1]))
+				{
+
+				}else
+				{
+					FreqAdjustParam[0] = (uint16_t)duty_cycle_count;
+					FreqAdjustParam[1] = duty_tim;
+					SetPWMDutyCycleAndFrequency(duty_tim);
+					STMFLASH_Write(FLASH_SLAVE_ADJUST,FreqAdjustParam,2);
+				}
+
+
 			}else
 			{
 			}
@@ -298,11 +335,14 @@ void Usart3_ReceiveData(void)
 				DMA_USART3_Tx_Data(Comd_funparameter_txbuffer, 14);
 				HAL_Delay(2);
 				DMA_USART3_Tx_Data(Comd_funparameter_txbuffer, 14);
+
+				HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
 			}else if((USART3_RX_BUF[3] == 0x0) && (USART3_RX_BUF[4] == 0x0A) && (USART3_RX_BUF[5] == 0x00) && (USART3_RX_BUF[6] == 0x06)) //退出管理员界面
 			{
 				ultrasound_standby_time = 0;
 				Ultrasound_state = STANDBY_STATE;
 
+				HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
 			}
 		}
 
@@ -412,10 +452,6 @@ void Ultra_FourStates(void)
 				__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, 0);
 				__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);	//PWM_Ultra_A
 
-				__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, 0);
-				__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, 0);	//PWM_Ultra_B
-
-
 				if(ultrasound_standby_time >= 4500)
 				{
 					ultrasound_standby_time = 0;
@@ -438,9 +474,6 @@ void Ultra_FourStates(void)
 
 				__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, 0);
 				__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);	//PWM_Ultra_A
-
-				__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, 0);
-				__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, 0);	//PWM_Ultra_B
 
 				if(ultrasound_standby_time >= 60000)
 				{
@@ -474,10 +507,6 @@ void Ultra_FourStates(void)
 				{
 					Motor_Worktime = 0;
 				}
-
-				__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);	//PWM_Ultra_A
-				__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, (duty_count * duty_cycle_count / 100)); // 假设使用通道1	//PWM_Ultra_B
-				//__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, 100);
 			}
 				break;
 		//关机状态
@@ -621,13 +650,20 @@ static void SetPWMDutyCycleAndFrequency(uint32_t pulsetime)
 		return ;
 	}
 
+	// 停止定时器
+	HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+	HAL_TIM_Base_Stop(&htim4);
+
 	__HAL_TIM_SET_PRESCALER(&htim4, out_prescaler_value);
-	__HAL_TIM_SET_AUTORELOAD(&htim4, out_count_value);
+	__HAL_TIM_SetAutoreload(&htim4, out_count_value);
 	duty_count = out_count_value;
-//	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, (out_count_value * dutyCycle / 100)); // 假设使用通道1
+
+	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);	//PWM_Ultra_A
+	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, (duty_count * duty_cycle_count / 100)); // 假设使用通道1	//PWM_Ultra_B
+	//__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, 100);
 
     // 更新并启动定时器
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-
+	HAL_TIM_Base_Start(&htim4);
+    //HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 }
 

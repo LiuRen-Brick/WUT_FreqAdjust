@@ -190,11 +190,11 @@ void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 71;
+  htim4.Init.Prescaler = 7200-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 2500;
+  htim4.Init.Period = 50000;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
@@ -217,7 +217,7 @@ void MX_TIM4_Init(void)
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  sConfigOC.OCFastMode = TIM_OCFAST_ENABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
@@ -333,7 +333,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle)
     */
     GPIO_InitStruct.Pin = WAVE_BCH_EN_Pin|WAVE_ACH_EN_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN TIM4_MspPostInit 1 */

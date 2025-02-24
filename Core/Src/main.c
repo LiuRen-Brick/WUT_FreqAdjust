@@ -117,8 +117,8 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_TIM_Base_Start_IT(&htim3);
-  HAL_TIM_Base_Start_IT(&htim4);
+  HAL_TIM_Base_Start(&htim3);
+  HAL_TIM_Base_Start(&htim4);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);

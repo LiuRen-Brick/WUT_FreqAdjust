@@ -78,6 +78,7 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   //char test[] = "Hello";
   /* USER CODE END 1 */

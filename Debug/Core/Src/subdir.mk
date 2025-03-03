@@ -1,6 +1,6 @@
 ################################################################################
 # 自动生成的文件。不要编辑！
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 

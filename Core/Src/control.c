@@ -455,7 +455,13 @@ void Ultra_FourStates(void)
 				if(ultrasound_standby_time >= 4500)
 				{
 					ultrasound_standby_time = 0;
-					Ultrasound_state = CLOSE_STATE;
+					if(battery_level_state < boost_battery_level1)
+					{
+
+					}else
+					{
+						Ultrasound_state = CLOSE_STATE;
+					}
 				}
 			}
 				break;
@@ -478,7 +484,13 @@ void Ultra_FourStates(void)
 				if(ultrasound_standby_time >= 60000)
 				{
 					ultrasound_standby_time = 0;
-					Ultrasound_state = CLOSE_STATE;
+					if(battery_level_state < boost_battery_level1)
+					{
+
+					}else
+					{
+						Ultrasound_state = CLOSE_STATE;
+					}
 				}
 			}
 				break;

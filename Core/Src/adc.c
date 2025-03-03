@@ -163,7 +163,7 @@ void ADC1_Init(void)
  * @brief  :ADC1_GetBatteryVol
  * @param  :void
  * @retval :none
- * @func   :获取电池电压，对电压进行滤波处理，标定不�??????????要？
+ * @func   :获取电池电压，对电压进行滤波处理，标定不�??????????要？
  */
 void ADC1_GetBatteryVol(void)
 {
@@ -172,19 +172,19 @@ void ADC1_GetBatteryVol(void)
 	static uint8_t SampleCount = 0;
 	static uint32_t old_tick = 0;
 
-	//等待DMA空闲执行下一次采�?
+	//等待DMA空闲执行下一次采�?
 	if(__HAL_DMA_GET_FLAG(&hadc1,DMA_FLAG_TC1) == SET)
 	{
 	   __HAL_DMA_CLEAR_FLAG(&hadc1,DMA_FLAG_TC1);
 	   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&bat_temp_val, 1);
 	}
 	battery_vol = (float)bat_temp_val * 3300.0f / 4095;
-	//采样采用的分压电�?3:2左右
+	//采样采用的分压电�?3:2左右
 	battery_vol = battery_vol / 0.6285f;
 
 	if(SampleStarFlg == 0)
 	{
-		//第一次采样完全填�?
+		//第一次采样完全填�?
 		for(SampleCount = 0;SampleCount < 15;SampleCount++)
 		{
 			battery_adc_buff[SampleCount] = (uint32_t)battery_vol;
@@ -214,7 +214,7 @@ void ADC1_GetBatteryVol(void)
  * @param   :buf  电压存储缓存
  * @param   :len  数据长度
  * @retval  :vol  滤波后的电压
- * @func	:去掉�??大最小�?�取平均值，防止采样误差
+ * @func	:去掉�??大最小�?�取平均值，防止采样误差
  */
 
 static uint16_t SampleVolFilter(uint32_t* buf,uint8_t len)

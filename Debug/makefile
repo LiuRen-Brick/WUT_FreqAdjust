@@ -1,6 +1,6 @@
 ################################################################################
 # 自动生成的文件。不要编辑！
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -67,7 +67,7 @@ main-build: WUT_FreqAdjust.elf secondary-outputs
 
 # 工具调用
 WUT_FreqAdjust.elf WUT_FreqAdjust.map: $(OBJS) $(USER_OBJS) D:\STM32CubeIDE\TFA_ULT\WUT_FreqAdjust\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "WUT_FreqAdjust.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\STM32CubeIDE\TFA_ULT\WUT_FreqAdjust\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WUT_FreqAdjust.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "WUT_FreqAdjust.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\STM32CubeIDE\TFA_ULT\WUT_FreqAdjust\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WUT_FreqAdjust.map" -Wl,--gc-sections -static -Wl,--no-warn-execstack -Wl,--no-warn-rwx-segments --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo '已结束构建目标： $@'
 	@echo ' '
 

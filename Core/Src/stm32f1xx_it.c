@@ -57,15 +57,15 @@ uint8_t USART3_TX_BUF[MAX_TX_LEN];   // my_printf的发送缓冲，下文详述�
 uint8_t USART3_RX_BUF[MAX_RX_LEN];
 volatile uint8_t data_length;
 volatile uint8_t USART3_RX_FLAG = 0;
-volatile uint8_t USART3_TX_FLAG = 0; // USART发�?�标志，启动发�?�时�?????1，加volatile防编译器优化
+volatile uint8_t USART3_TX_FLAG = 0; // USART发�?�标志，启动发�?�时�?????1，加volatile防编译器优化
 uint8_t u1rxbuf[MAX_RX_LEN];         // 数据接收缓冲1
 uint8_t u2rxbuf[MAX_RX_LEN];         // 数据接收缓冲2
-uint8_t WhichBufIsReady = 0;         // 双缓存指示器�?????
+uint8_t WhichBufIsReady = 0;         // 双缓存指示器�?????
 // 0:u1rxbuf 被DMA占用接收,  u2rxbuf 可以读取.
 // 0:u2rxbuf 被DMA占用接收,  u1rxbuf 可以读取.
 uint8_t *p_IsOK = u2rxbuf;        // 指针—�?�指向可以读取的那个缓冲
-uint8_t *p_IsToReceive = u1rxbuf; // 指针—�?�指向被占用的那个缓�?????
-//注意定义的时候要先让这两个指针按照WhichBufIsReady的初始状态先初始化一下�?�下文详述为�?????么要这样子�??
+uint8_t *p_IsToReceive = u1rxbuf; // 指针—�?�指向被占用的那个缓�?????
+//注意定义的时候要先让这两个指针按照WhichBufIsReady的初始状态先初始化一下�?�下文详述为�?????么要这样子�??
 
 
 

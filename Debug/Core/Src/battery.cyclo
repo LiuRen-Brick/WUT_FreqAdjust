@@ -1,2 +1,3 @@
-../Core/Src/battery.c:35:6:Battery_LevelReceive	29
-../Core/Src/battery.c:125:6:Battery_LevelSend	13
+../Core/Src/battery.c:107:6:Battery_LevelReceive	11
+../Core/Src/battery.c:149:6:Battery_LevelSend	13
+../Core/Src/battery.c:221:16:BatteryLevelGat	9

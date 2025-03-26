@@ -670,8 +670,8 @@ static void SetPWMDutyCycleAndFrequency(uint32_t pulsetime)
 	__HAL_TIM_SetAutoreload(&htim4, out_count_value);
 	duty_count = out_count_value;
 
-	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);	//PWM_Ultra_A
-	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, (duty_count * duty_cycle_count / 100)); // 假设使用通道1	//PWM_Ultra_B
+	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, 0);											//PWM_Ultra_A
+	__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, (duty_count * duty_cycle_count / 100)); 	// 假设使用通道1	//PWM_Ultra_B
 	//__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, 100);
 
     // 更新并启动定时器

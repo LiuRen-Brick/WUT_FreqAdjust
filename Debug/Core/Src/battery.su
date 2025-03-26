@@ -1,2 +1,3 @@
-../Core/Src/battery.c:35:6:Battery_LevelReceive	4	static
-../Core/Src/battery.c:125:6:Battery_LevelSend	8	static
+../Core/Src/battery.c:107:6:Battery_LevelReceive	8	static
+../Core/Src/battery.c:149:6:Battery_LevelSend	8	static
+../Core/Src/battery.c:221:16:BatteryLevelGat	24	static

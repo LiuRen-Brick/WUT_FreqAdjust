@@ -1,6 +1,6 @@
 ../Core/Src/adc.c:39:6:MX_ADC1_Init	24	static
-../Core/Src/adc.c:81:6:HAL_ADC_MspInit	40	static
-../Core/Src/adc.c:124:6:HAL_ADC_MspDeInit	16	static
-../Core/Src/adc.c:155:6:ADC1_Init	8	static
-../Core/Src/adc.c:168:6:ADC1_GetBatteryVol	24	static
-../Core/Src/adc.c:220:17:SampleVolFilter	32	static
+../Core/Src/adc.c:99:6:HAL_ADC_MspInit	40	static
+../Core/Src/adc.c:142:6:HAL_ADC_MspDeInit	16	static
+../Core/Src/adc.c:173:6:ADC1_Init	8	static
+../Core/Src/adc.c:186:6:ADC1_GetBatteryVol	32	static
+../Core/Src/adc.c:240:17:SampleVolFilter	32	static

@@ -26,6 +26,78 @@ uint8_t battery_voltage_alarm_flag = 0;
 uint8_t filter_num_count;
 uint8_t battery_txbuffer[14]={0xEE,0xB5,0x10,0x00,0x00,0x00,0x00,0x10,0x01,0x01,0xFF,0xFC,0xFF,0xFF};
 
+uint8_t BatStaCode_Boost[16] =
+{
+	0x80, 0x84, 0x88, 0x8C, 0x90, 0x94, 0x98, 0x9C, 0xA0, 0xA4, 0xA8, 0xAC, 0xB0, 0xB4, 0xB8, 0xBC,
+};
+
+uint8_t BatStaLevel_BoostI[16] =
+{
+	boost_battery_level1,
+	boost_battery_level1,
+	boost_battery_level2,
+	boost_battery_level2,
+	boost_battery_level2,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level5,
+	boost_battery_level5,
+	boost_battery_level5,
+};
+
+uint8_t BatStaLevel_BoostW[16] =
+{
+	boost_battery_level1,
+	boost_battery_level2,
+	boost_battery_level2,
+	boost_battery_level2,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level3,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level4,
+	boost_battery_level5,
+	boost_battery_level5,
+	boost_battery_level5,
+	boost_battery_level5,
+};
+
+uint8_t BatStaCode_Charge[17] =
+{
+	0x02, 0x06, 0x0A, 0x0E,	0x12, 0x16, 0x1A, 0x1E, 0x22, 0x26, 0x2A, 0x2E, 0x32, 0x36, 0x38, 0x3A, 0x7C,
+};
+
+uint8_t BatStaLevel_Charge[17] =
+{
+	charge_battery_level1,
+	charge_battery_level1,
+	charge_battery_level1,
+	charge_battery_level1,
+	charge_battery_level2,
+	charge_battery_level2,
+	charge_battery_level2,
+	charge_battery_level2,
+	charge_battery_level3,
+	charge_battery_level3,
+	charge_battery_level3,
+	charge_battery_level3,
+	charge_battery_level4,
+	charge_battery_level4,
+	charge_battery_level4,
+	charge_battery_level4,
+	charge_battery_level5,
+};
+
+static uint8_t BatteryLevelGat(const uint8_t stacode,const uint8_t devsta);
 /*
  * @brief	Battery_LevelReceive
  * @param   none
@@ -59,59 +131,11 @@ void Battery_LevelReceive(void)
 				battery_voltage_data = BatteryLevelBuf[0] & 0x70;
 			}else
 			{
-
 			}
 		}
 
+		battery_level_state = BatteryLevelGat(battery_voltage_data,Ultrasound_state);
 
-		switch(battery_voltage_data)
-		{
-			//0x00 - 0x70电池处于充电状态
-			case	0x00:
-					battery_level_state =  charge_battery_level1;
-						break;
-
-			case	0x10:
-					battery_level_state =  charge_battery_level2;
-						break;
-
-			case	0x20:
-					battery_level_state =  charge_battery_level3;
-						break;
-
-			case	0x30:
-					battery_level_state =  charge_battery_level4;
-						break;
-
-			case	0x70:
-					battery_level_state =  charge_battery_level5;
-						break;
-
-			//Boost 放电状态
-			case	0xAA:
-					battery_level_state =  boost_battery_level1;
-						break;
-
-			case	0x80:
-					battery_level_state =  boost_battery_level2;
-						break;
-
-			case	0x90:
-					battery_level_state =  boost_battery_level3;
-						break;
-
-			case	0xA0:
-					battery_level_state =  boost_battery_level4;
-						break;
-			case	0xB0:
-
-					battery_level_state =  boost_battery_level5;
-
-						break;
-			default :
-						break;
-
-		}
 		send_battery_state_data = battery_level_state;
 	}
 }
@@ -192,4 +216,58 @@ void Battery_LevelSend(void)
 		DisChCount++;
 		ChCount = 1;
 	}
+}
+
+static uint8_t BatteryLevelGat(const uint8_t stacode,const uint8_t devsta)
+{
+	uint8_t batlevel = boost_battery_level5;
+	uint8_t status = STANDBY_STATE;
+	uint8_t tag_i = 0;
+
+	status = devsta;
+
+	switch(status)
+	{
+	case CHARGE_STATE:
+
+		for(tag_i = 0;tag_i < 17;tag_i++)
+		{
+			if(stacode == BatStaCode_Charge[tag_i])
+			{
+				batlevel = BatStaLevel_Charge[tag_i];
+				break;
+			}
+		}
+
+		break;
+
+	case WORK_STATE:
+
+		for(tag_i = 0;tag_i < 17;tag_i++)
+		{
+			if(stacode == BatStaCode_Boost[tag_i])
+			{
+				batlevel = BatStaLevel_BoostW[tag_i];
+				break;
+			}
+		}
+
+		break;
+
+	default:
+
+		for(tag_i = 0;tag_i < 17;tag_i++)
+		{
+			if(stacode == BatStaCode_Boost[tag_i])
+			{
+				batlevel = BatStaLevel_BoostI[tag_i];
+				break;
+			}
+		}
+
+		break;
+	}
+
+
+	return batlevel;
 }

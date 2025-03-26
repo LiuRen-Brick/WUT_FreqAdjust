@@ -22,7 +22,7 @@
 #include "adc.h"
 #include "stm32f1xx_it.h"
 
-#define CHARGE_WORK
+//#define CHARGE_WORK
 
 enum Ultransound_Work_State
 {
